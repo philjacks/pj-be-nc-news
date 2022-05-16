@@ -5,6 +5,7 @@ exports.fetchTopicsFromDb = () => {
     SELECT * FROM topics
     `;
   return db.query(qeuryStr).then((data) => {
+    
     return data.rows;
   });
 };
