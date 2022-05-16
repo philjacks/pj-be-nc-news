@@ -2,7 +2,7 @@
 
 **Fellow Developers - please add 2 dotenv files in order to connect to the 2 databases locally**
 
-## Database Connection Instrcutions
+## Database Connection Instructions
 1. Run npm install for all necessary dependencies 
 2. Create 2 new files in the route directory **.env.development** & **.env.test**
 3. The names of the databases can be found in db/setup.sql
