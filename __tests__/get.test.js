@@ -26,7 +26,7 @@ describe("GET /api/topics", () => {
   });
 });
 
-describe("GET /api/article/:article_id", () => {
+describe("GET /api/articles/:article_id", () => {
   test("Status 200 - should return an object containing the correct properties for an article", () => {
     return request(app)
       .get("/api/articles/1")
