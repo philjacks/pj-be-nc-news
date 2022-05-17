@@ -148,3 +148,20 @@ describe("PATCH /api/articles/:article_id", () => {
       });
   });
 });
+
+describe("GET /api/users", () => {
+  test("Status 200 - should return with an array of objects containing a username", () => {
+    return request(app)
+      .get("/api/users")
+      .expect(200)
+      .then(({ body: { usernames } }) => {
+        expect(usernames).toBeInstanceOf(Array);
+        expect(usernames).toHaveLength(4);
+        usernames.forEach((user) => {
+          expect(user).toMatchObject({
+            username: expect.any(String),
+          });
+        });
+      });
+  });
+});
