@@ -32,15 +32,17 @@ describe("GET /api/articles/:article_id", () => {
       .get("/api/articles/1")
       .expect(200)
       .then(({ body: { article } }) => {
-        expect(article).toEqual({
-          article_id: 1,
-          title: "Living in the shadow of a great man",
-          author: "butter_bridge",
-          created_at: "2020-07-09T20:11:00.000Z",
-          topic: "mitch",
-          votes: 100,
-          body: "I find this existence challenging",
-        });
+        expect(article).toEqual(
+          expect.objectContaining({
+            article_id: 1,
+            title: "Living in the shadow of a great man",
+            author: "butter_bridge",
+            created_at: "2020-07-09T20:11:00.000Z",
+            topic: "mitch",
+            votes: 100,
+            body: "I find this existence challenging",
+          })
+        );
       });
   });
 
@@ -179,6 +181,28 @@ describe("GET /api/users", () => {
             avatar_url: expect.any(String),
           });
         });
+      });
+  });
+});
+
+describe("GET /api/articles/:article_id - with comment_count", () => {
+  test("Status 200 - should return an object containing the correct properties for an article including a comment count", () => {
+    return request(app)
+      .get("/api/articles/1")
+      .expect(200)
+      .then(({ body: { article } }) => {
+        expect(article).toEqual(
+          expect.objectContaining({
+            article_id: 1,
+            title: "Living in the shadow of a great man",
+            author: "butter_bridge",
+            created_at: "2020-07-09T20:11:00.000Z",
+            topic: "mitch",
+            votes: 100,
+            body: "I find this existence challenging",
+            comment_count: 11,
+          })
+        );
       });
   });
 });
