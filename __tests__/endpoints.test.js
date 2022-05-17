@@ -106,6 +106,30 @@ describe("PATCH /api/articles/:article_id", () => {
       });
   });
 
+  test("Status 400 - should return an error if the request body votes missing", () => {
+    const inc_votes = {};
+    return request(app)
+      .patch("/api/articles/beans")
+      .send(inc_votes)
+      .expect(400)
+      .then(({ body: { msg } }) => {
+        expect(msg).toBe("Bad request");
+      });
+  });
+
+  test("Status 400 - should return an error if the request body votes are not an integer", () => {
+    const inc_votes = {
+      votes: "beans",
+    };
+    return request(app)
+      .patch("/api/articles/beans")
+      .send(inc_votes)
+      .expect(400)
+      .then(({ body: { msg } }) => {
+        expect(msg).toBe("Bad request");
+      });
+  });
+
   test("Status 404 - should return an error message if article doesn't exist", () => {
     return request(app)
       .patch("/api/articles/999")
