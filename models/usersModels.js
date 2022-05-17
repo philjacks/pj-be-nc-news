@@ -2,7 +2,7 @@ const db = require("../db/connection");
 
 exports.fetchUsersFromDb = () => {
   const queryStr = `
-     SELECT username FROM users
+     SELECT * FROM users
     `;
 
   return db.query(queryStr).then((data) => {
