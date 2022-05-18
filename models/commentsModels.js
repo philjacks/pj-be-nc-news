@@ -7,7 +7,8 @@ exports.fetchCommentsByArticleIdFromDb = (id) => {
         votes,
         created_at,
         author,
-        body
+        body,
+        article_id
         FROM comments
         WHERE article_id = $1
     `;
