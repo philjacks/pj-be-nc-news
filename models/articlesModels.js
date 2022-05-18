@@ -47,8 +47,15 @@ exports.updateArticleVotesInDb = (id, inc_votes) => {
   });
 };
 
-exports.fetchArticlesFromDb = () => {
-  const queryStr = `
+exports.fetchArticlesFromDb = (
+  sort_by = "created_at",
+  order = "desc",
+  topic
+) => {
+  const validSortBy = ["created_at", "title", "author", "votes"];
+  const validOrder = ["ASC", "DESC"];
+
+  let queryStr = `
         SELECT 
         articles.article_id,
         title,
@@ -61,8 +68,18 @@ exports.fetchArticlesFromDb = () => {
         LEFT JOIN comments
         ON comments.article_id = articles.article_id
         GROUP BY articles.article_id
-        ORDER BY articles.created_at DESC
-    `;
+      `;
+
+  if (order) {
+    order = order.toUpperCase();
+  }
+
+  if (!validSortBy.includes(sort_by) || !validOrder.includes(order)) {
+    return Promise.reject({ status: 400, msg: "Bad request" });
+  } else {
+    queryStr += `ORDER BY articles.${sort_by} ${order}`;
+  }
+
   return db.query(queryStr).then((data) => {
     return data.rows.map((article) => {
       return {

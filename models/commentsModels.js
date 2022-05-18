@@ -29,7 +29,6 @@ exports.addNewCommentToDbByArticleId = (id, newComment) => {
   `;
 
   return db.query(queryStr, [body, id, username, 0]).then((data) => {
-    console.log(data.rows[0]);
     return data.rows[0];
   });
 };
