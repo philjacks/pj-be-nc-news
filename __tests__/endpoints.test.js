@@ -249,7 +249,7 @@ describe("GET /api/articles/:article_id/comments", () => {
         expect(comments).toBeInstanceOf(Array);
         expect(comments).toHaveLength(11);
         comments.forEach((comment) => {
-          expect(comment).toMatchObject({
+          expect(comment).toEqual({
             comment_id: expect.any(Number),
             body: expect.any(String),
             author: expect.any(String),
