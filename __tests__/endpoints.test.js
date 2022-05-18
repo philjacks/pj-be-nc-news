@@ -3,6 +3,7 @@ const app = require("../app");
 const seed = require("../db/seeds/seed");
 const testData = require("../db/data/test-data");
 const db = require("../db/connection");
+require("jest-sorted");
 
 beforeEach(() => seed(testData));
 
@@ -203,6 +204,38 @@ describe("GET /api/articles/:article_id - with comment_count", () => {
             comment_count: 11,
           })
         );
+      });
+  });
+});
+
+describe("GET /api/articles", () => {
+  test("Status 200 - should return an array of article objects containing all the correct properties", () => {
+    return request(app)
+      .get("/api/articles")
+      .expect(200)
+      .then(({ body: { articles } }) => {
+        expect(articles).toBeInstanceOf(Array);
+        expect(articles).toHaveLength(12);
+        articles.forEach((article) => {
+          expect(article).toStrictEqual({
+            article_id: expect.any(Number),
+            title: expect.any(String),
+            author: expect.any(String),
+            created_at: expect.any(String),
+            topic: expect.any(String),
+            votes: expect.any(Number),
+            comment_count: expect.any(Number),
+          });
+        });
+      });
+  });
+
+  test("Status 200 - should return an array of article objects sorted in descending order by date", () => {
+    return request(app)
+      .get("/api/articles")
+      .expect(200)
+      .then(({ body: { articles } }) => {
+        expect(articles).toBeSortedBy("created_at", { descending: true });
       });
   });
 });
