@@ -1,7 +1,10 @@
 const express = require("express");
 const { getTopics } = require("./controllers/topicsControllers");
 const { getUsers } = require("./controllers/usersControllers");
-const { getCommentsByArticleId } = require("./controllers/commentsControllers");
+const {
+  getCommentsByArticleId,
+  postNewCommentByArticleId,
+} = require("./controllers/commentsControllers");
 const {
   getArticleById,
   updateArticleVotes,
@@ -27,6 +30,7 @@ app.patch("/api/articles/:article_id", updateArticleVotes);
 
 // Comments
 app.get("/api/articles/:article_id/comments", getCommentsByArticleId);
+app.post("/api/articles/:article_id/comments", postNewCommentByArticleId);
 
 // Users
 app.get("/api/users", getUsers);
