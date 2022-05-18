@@ -49,7 +49,13 @@ exports.updateArticleVotesInDb = (id, inc_votes) => {
 
 exports.fetchArticlesFromDb = () => {
   const queryStr = `
-        SELECT articles.*,
+        SELECT 
+        articles.article_id,
+        title,
+        topic,
+        articles.author,
+        articles.created_at,
+        articles.votes,
         COUNT(comments.article_id) AS comment_count
         FROM articles
         LEFT JOIN comments
