@@ -67,8 +67,13 @@ exports.fetchArticlesFromDb = (
         FROM articles
         LEFT JOIN comments
         ON comments.article_id = articles.article_id
-        GROUP BY articles.article_id
       `;
+
+  if (topic) {
+    queryStr += `WHERE topic LIKE '${topic}'`;
+  }
+
+  queryStr += ` GROUP BY articles.article_id`;
 
   if (order) {
     order = order.toUpperCase();
@@ -77,7 +82,7 @@ exports.fetchArticlesFromDb = (
   if (!validSortBy.includes(sort_by) || !validOrder.includes(order)) {
     return Promise.reject({ status: 400, msg: "Bad request" });
   } else {
-    queryStr += `ORDER BY articles.${sort_by} ${order}`;
+    queryStr += ` ORDER BY articles.${sort_by} ${order}`;
   }
 
   return db.query(queryStr).then((data) => {

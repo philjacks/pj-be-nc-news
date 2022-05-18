@@ -275,26 +275,47 @@ describe("GET /api/articles", () => {
       });
   });
 
-  //   test("Status 200 - should return an array of article objects filtered by the topic mitch when passed as a query", () => {
-  //     return request(app)
-  //       .get("/api/articles?topic=mitch")
-  //       .expect(200)
-  //       .then(({ body: { articles } }) => {
-  //         expect(articles).toBeInstanceOf(Array);
-  //         expect(articles).toHaveLength(11);
-  //         articles.forEach((article) => {
-  //           expect(article).toMatchObject({
-  //             article_id: expect.any(Number),
-  //             title: expect.any(String),
-  //             author: expect.any(String),
-  //             created_at: expect.any(String),
-  //             topic: "mitch",
-  //             votes: expect.any(Number),
-  //             comment_count: expect.any(Number),
-  //           });
-  //         });
-  //       });
-  //   });
+  test("Status 200 - should return an array of article objects filtered by the topic mitch when passed as a query", () => {
+    return request(app)
+      .get("/api/articles?topic=mitch")
+      .expect(200)
+      .then(({ body: { articles } }) => {
+        expect(articles).toBeInstanceOf(Array);
+        expect(articles).toHaveLength(11);
+        articles.forEach((article) => {
+          expect(article).toMatchObject({
+            article_id: expect.any(Number),
+            title: expect.any(String),
+            author: expect.any(String),
+            created_at: expect.any(String),
+            topic: "mitch",
+            votes: expect.any(Number),
+            comment_count: expect.any(Number),
+          });
+        });
+      });
+  });
+
+  test("Status 200 - should return an array of article objects filtered by the topic cats when passed as a query", () => {
+    return request(app)
+      .get("/api/articles?topic=cats")
+      .expect(200)
+      .then(({ body: { articles } }) => {
+        expect(articles).toBeInstanceOf(Array);
+        expect(articles).toHaveLength(1);
+        articles.forEach((article) => {
+          expect(article).toMatchObject({
+            article_id: expect.any(Number),
+            title: expect.any(String),
+            author: expect.any(String),
+            created_at: expect.any(String),
+            topic: "cats",
+            votes: expect.any(Number),
+            comment_count: expect.any(Number),
+          });
+        });
+      });
+  });
 });
 
 describe("GET /api/articles/:article_id/comments", () => {

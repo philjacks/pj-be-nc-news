@@ -31,7 +31,6 @@ exports.updateArticleVotes = (req, res, next) => {
 
 exports.getArticles = (req, res, next) => {
   const { sort_by, order, topic } = req.query;
-  console.log(topic)
 
   fetchArticlesFromDb(sort_by, order, topic)
     .then((articles) => {
