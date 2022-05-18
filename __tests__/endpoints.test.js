@@ -249,14 +249,25 @@ describe("GET /api/articles/:article_id/comments", () => {
         expect(comments).toBeInstanceOf(Array);
         expect(comments).toHaveLength(11);
         comments.forEach((comment) => {
-          expect(comment).toMatchObject({
+          expect(comment).toEqual({
             comment_id: expect.any(Number),
             body: expect.any(String),
             author: expect.any(String),
             votes: expect.any(Number),
             created_at: expect.any(String),
+            article_id: expect.any(Number),
           });
         });
+      });
+  });
+
+  test("Status 200 - should return an empty array if the article exists but there are no comments", () => {
+    return request(app)
+      .get("/api/articles/2/comments")
+      .expect(200)
+      .then(({ body: { comments } }) => {
+        expect(comments).toBeInstanceOf(Array)
+        expect(comments).toHaveLength(0)
       });
   });
 
