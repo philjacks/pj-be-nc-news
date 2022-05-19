@@ -230,12 +230,90 @@ describe("GET /api/articles", () => {
       });
   });
 
-  test("Status 200 - should return an array of article objects sorted in descending order by date", () => {
+  test("Status 200 - should return an array of article objects sorted in descending order by date as default", () => {
     return request(app)
       .get("/api/articles")
       .expect(200)
       .then(({ body: { articles } }) => {
         expect(articles).toBeSortedBy("created_at", { descending: true });
+      });
+  });
+
+  test("Status 200 - should return an array of article objects sorted in descending order by title when passed as a query", () => {
+    return request(app)
+      .get("/api/articles?sort_by=title")
+      .expect(200)
+      .then(({ body: { articles } }) => {
+        expect(articles).toBeSortedBy("title", { descending: true });
+      });
+  });
+
+  test("Status 400 - should return an error message if an invalid sort_by is passed", () => {
+    return request(app)
+      .get("/api/articles?sort_by=beans")
+      .expect(400)
+      .then(({ body: { msg } }) => {
+        expect(msg).toBe("Bad request");
+      });
+  });
+
+  test("Status 200 - should return an array of article objects sorted in ASCENDING order by date when passed as a query", () => {
+    return request(app)
+      .get("/api/articles?order=asc")
+      .expect(200)
+      .then(({ body: { articles } }) => {
+        expect(articles).toBeSortedBy("created_at", { ascending: true });
+      });
+  });
+
+  test("Status 400 - should return an error message if an invalid order is passed", () => {
+    return request(app)
+      .get("/api/articles?order=bea")
+      .expect(400)
+      .then(({ body: { msg } }) => {
+        expect(msg).toBe("Bad request");
+      });
+  });
+
+  test("Status 200 - should return an array of article objects filtered by the topic mitch when passed as a query", () => {
+    return request(app)
+      .get("/api/articles?topic=mitch")
+      .expect(200)
+      .then(({ body: { articles } }) => {
+        expect(articles).toBeInstanceOf(Array);
+        expect(articles).toHaveLength(11);
+        articles.forEach((article) => {
+          expect(article).toMatchObject({
+            article_id: expect.any(Number),
+            title: expect.any(String),
+            author: expect.any(String),
+            created_at: expect.any(String),
+            topic: "mitch",
+            votes: expect.any(Number),
+            comment_count: expect.any(Number),
+          });
+        });
+      });
+  });
+
+  test("Status 200 - should return an array of article objects filtered by the topic cats when passed as a query", () => {
+    return request(app)
+      .get("/api/articles?topic=cats")
+      .expect(200)
+      .then(({ body: { articles } }) => {
+        expect(articles).toBeInstanceOf(Array);
+        expect(articles).toHaveLength(1);
+        articles.forEach((article) => {
+          expect(article).toMatchObject({
+            article_id: expect.any(Number),
+            title: expect.any(String),
+            author: expect.any(String),
+            created_at: expect.any(String),
+            topic: "cats",
+            votes: expect.any(Number),
+            comment_count: expect.any(Number),
+          });
+        });
       });
   });
 });
