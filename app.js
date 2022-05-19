@@ -15,10 +15,16 @@ const {
   handleCustomErrors,
   handleInternalServerErrors,
 } = require("./controllers/errorsControllers");
+const info = require("./endpoints.json");
 
 const app = express();
 
 app.use(express.json());
+
+// Info
+app.get("/api", (req, res) => {
+  res.status(200).send(info);
+});
 
 // Topics
 app.get("/api/topics", getTopics);

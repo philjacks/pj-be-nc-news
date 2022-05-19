@@ -9,6 +9,17 @@ beforeEach(() => seed(testData));
 
 afterAll(() => db.end());
 
+describe("GET /api", () => {
+  test("Status 200 - should respond with a json object containing info on all other endpoints ", () => {
+    return request(app)
+      .get("/api")
+      .expect(200)
+      .then(({ body }) => {
+        expect(body).toBeInstanceOf(Object);
+      });
+  });
+});
+
 describe("GET /api/topics", () => {
   test("Status 200 - should return with an array of topics containing slug & description properties", () => {
     return request(app)
