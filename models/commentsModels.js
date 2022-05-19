@@ -57,7 +57,5 @@ exports.removeCommentByIdFromDb = (id) => {
     WHERE comment_id = $1
   `;
 
-  return db.query(queryStr, [id]).then((data) => {
-    console.log(data);
-  });
+  return db.query(queryStr, [id]);
 };
