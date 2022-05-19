@@ -1,23 +1,30 @@
 const db = require("../db/connection");
+const { fetchUsersFromDb } = require("./usersModels");
 
 exports.fetchCommentsByArticleIdFromDb = (id) => {
   const queryStr = `
-        SELECT *
+        SELECT 
+        comment_id,
+        votes,
+        created_at,
+        author,
+        body,
+        article_id
         FROM comments
         WHERE article_id = $1
     `;
 
   return db.query(queryStr, [id]).then((data) => {
-    const comments = data.rows;
-    if (comments.length === 0) {
-      return Promise.reject({ status: 404, msg: "Not found" });
-    }
     return data.rows;
   });
 };
 
 exports.addNewCommentToDbByArticleId = (id, newComment) => {
   const { username, body } = newComment;
+
+  if (!username || !body) {
+    return Promise.reject({ status: 400, msg: "Bad request" });
+  }
 
   const queryStr = `
     INSERT INTO comments 
@@ -27,9 +34,21 @@ exports.addNewCommentToDbByArticleId = (id, newComment) => {
     RETURNING *
   `;
 
-  return db.query(queryStr, [body, id, username, 0]).then((data) => {
-    return data.rows[0];
-  });
+  return fetchUsersFromDb()
+    .then((users) => {
+      const usernames = users.map((userObj) => {
+        return userObj.username;
+      });
+
+      if (!usernames.includes(username)) {
+        return Promise.reject({ status: 401, msg: "User not found" });
+      } else {
+        return db.query(queryStr, [body, id, username, 0]);
+      }
+    })
+    .then((data) => {
+      return data.rows[0];
+    });
 };
 
 exports.removeCommentByIdFromDb = (id) => {
