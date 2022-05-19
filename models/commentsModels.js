@@ -50,3 +50,18 @@ exports.addNewCommentToDbByArticleId = (id, newComment) => {
       return data.rows[0];
     });
 };
+
+exports.removeCommentByIdFromDb = (id) => {
+  const queryStr = `
+    DELETE FROM comments
+    WHERE comment_id = $1
+    RETURNING *
+  `;
+
+  return db.query(queryStr, [id]).then((data) => {
+    const deletedComment = data.rows[0];
+    if (!deletedComment) {
+      return Promise.reject({ status: 404, msg: "Not found" });
+    }
+  });
+};

@@ -4,6 +4,7 @@ const { getUsers } = require("./controllers/usersControllers");
 const {
   getCommentsByArticleId,
   postNewCommentByArticleId,
+  deleteCommentById
 } = require("./controllers/commentsControllers");
 const {
   getArticleById,
@@ -31,6 +32,7 @@ app.patch("/api/articles/:article_id", updateArticleVotes);
 // Comments
 app.get("/api/articles/:article_id/comments", getCommentsByArticleId);
 app.post("/api/articles/:article_id/comments", postNewCommentByArticleId);
+app.delete("/api/comments/:comment_id", deleteCommentById);
 
 // Users
 app.get("/api/users", getUsers);
