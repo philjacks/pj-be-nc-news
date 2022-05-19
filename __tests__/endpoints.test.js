@@ -268,7 +268,7 @@ describe("GET /api/articles", () => {
 
   test("Status 400 - should return an error message if an invalid order is passed", () => {
     return request(app)
-      .get("/api/articles?order=bea")
+      .get("/api/articles?order=bae")
       .expect(400)
       .then(({ body: { msg } }) => {
         expect(msg).toBe("Bad request");

@@ -28,15 +28,93 @@
     "description": "serves an object of the required article",
     "queries": [],
     "exampleResponse": {
-      "articles": [
+      "article": {
+            "article_id": 1,
+            "title": "Living in the shadow of a great man",
+            "author": "butter_bridge",
+            "created_at": "2020-07-09T20:11:00.000Z",
+            "topic": "mitch",
+            "votes": 100,
+           " body": "I find this existence challenging"
+          }
+    }
+  },
+  "PATCH /api/articles/:article_id": {
+    "description": "serves an updated object of the required article with a new votes value",
+    "queries": [],
+    "exampleRequest": {
+      "votes": 2
+    },
+    "exampleResponse": {
+      "article": {
+            "article_id": 1,
+            "title": "Living in the shadow of a great man",
+            "author": "butter_bridge",
+            "created_at": "2020-07-09T20:11:00.000Z",
+            "topic": "mitch",
+            "votes": 102,
+           " body": "I find this existence challenging"
+          }
+    }
+  },
+  "GET /api/users": {
+    "description": "serves an array of all users",
+    "queries": [],
+    "exampleRequest": {
+      "votes": 2
+    },
+    "exampleResponse": {
+      "users": [{
+        "username": "butter_bridge",
+        "name": "jonny",
+        "avatar_url":
+          "https://www.healthytherapies.com/wp-content/uploads/2016/06/Lime3.jpg"
+        },
         {
-          "title": "Seafood substitutions are increasing",
-          "topic": "cooking",
-          "author": "weegembump",
-          "body": "Text from the article..",
-          "created_at": 1527695953341
+          "username": "icellusedkars",
+          "name": "sam",
+          "avatar_url": "https://avatars2.githubusercontent.com/u/24604688?s=460&v=4"
         }
       ]
+    }
+  },
+  "GET /api/articles/:article_id/comments": {
+  "description": "serves an array of comments by article id",
+  "queries": [],
+  "exampleResponse": {
+        "comments": [{
+        "body": "The beautiful thing about treasure is that it exists. Got to find out what kind of sheets these are; not cotton, not rayon, silky.",
+        "votes": 14,
+        "author": "butter_bridge",
+        "article_id": 1,
+        "created_at": 1604113380000
+        },
+        {
+          "body": "Replacing the quiet elegance of the dark suit and tie with the casual indifference of these muted earth tones is a form of fashion suicide, but, uh, call me crazy — onyou it works.",
+          "votes": 100,
+          "author": "icellusedkars",
+          "article_id": 1,
+          "created_at": 1583025180000
+        }
+      ]
+    }
+  },
+  "POST /api/articles/:article_id/comments": {
+  "description": "serves an array of comments by article id",
+  "queries": [],
+  "exampleRequest": {
+      "username": "lurker",
+     " body": "The first rule of fight club is.....post videos of the fights all over social media"
+    },
+  "exampleResponse": {
+        "comment": {
+          "author": "lurker",
+          "body": "The first rule of fight club is.....post videos of the fights all over social media",
+          "article_id": 2,
+          "votes": 0,
+          "comment_id": 19,
+          "created_at": "2020-07-09T20:11:00.000Z"
+        }
     }
   }
 }
