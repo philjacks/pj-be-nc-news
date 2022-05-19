@@ -450,7 +450,16 @@ describe("POST /api/articles/:article_id/comments", () => {
 
 describe("DELETE /api/comments/:comment_id", () => {
   test("Status 204 - should return a no content success status when deleting a comment by id", () => {
-    return request(app).delete("/api/comments/18").expect(204);
+    return request(app)
+      .delete("/api/comments/18")
+      .expect(204)
+      .then(() => {
+        db.query(`SELECT * FROM comments WHERE comment_id = 18`).then(
+          (data) => {
+            expect(data.rows).toEqual([]);
+          }
+        );
+      });
   });
 
   test("Status 400 - should return a bad request error if an invalid data type is passed as a param", () => {
@@ -459,6 +468,15 @@ describe("DELETE /api/comments/:comment_id", () => {
       .expect(400)
       .then(({ body: { msg } }) => {
         expect(msg).toBe("Bad request");
+      });
+  });
+
+  test("Status 404 - should return anot found error if passed a valid id but doesn't exist", () => {
+    return request(app)
+      .delete("/api/comments/999")
+      .expect(404)
+      .then(({ body: { msg } }) => {
+        expect(msg).toBe("Not found");
       });
   });
 });
