@@ -1,4 +1,3 @@
-const { parseInputDatesAsUTC } = require("pg/lib/defaults");
 const db = require("../db/connection");
 
 exports.fetchCommentsByArticleIdFromDb = (id) => {
@@ -30,5 +29,16 @@ exports.addNewCommentToDbByArticleId = (id, newComment) => {
 
   return db.query(queryStr, [body, id, username, 0]).then((data) => {
     return data.rows[0];
+  });
+};
+
+exports.removeCommentByIdFromDb = (id) => {
+  const queryStr = `
+    DELETE FROM comments
+    WHERE comment_id = $1
+  `;
+
+  return db.query(queryStr, [id]).then((data) => {
+    console.log(data);
   });
 };

@@ -408,3 +408,18 @@ describe("POST /api/articles/:article_id/comments", () => {
       });
   });
 });
+
+describe("DELETE /api/comments/:comment_id", () => {
+  test("Status 204 - should return a no content success status when deleting a comment by id", () => {
+    return request(app).delete("/api/comments/18").expect(204);
+  });
+
+  test("Status 400 - should return a bad request error if an invalid data type is passed as a param", () => {
+    return request(app)
+      .delete("/api/comments/beans")
+      .expect(400)
+      .then(({ body: { msg } }) => {
+        expect(msg).toBe("Bad request");
+      });
+  });
+});
