@@ -217,7 +217,7 @@ describe("GET /api/articles", () => {
         expect(articles).toBeInstanceOf(Array);
         expect(articles).toHaveLength(12);
         articles.forEach((article) => {
-          expect(article).toMatchObject({
+          expect(article).toStrictEqual({
             article_id: expect.any(Number),
             title: expect.any(String),
             author: expect.any(String),
@@ -327,14 +327,25 @@ describe("GET /api/articles/:article_id/comments", () => {
         expect(comments).toBeInstanceOf(Array);
         expect(comments).toHaveLength(11);
         comments.forEach((comment) => {
-          expect(comment).toMatchObject({
+          expect(comment).toEqual({
             comment_id: expect.any(Number),
             body: expect.any(String),
             author: expect.any(String),
             votes: expect.any(Number),
             created_at: expect.any(String),
+            article_id: expect.any(Number),
           });
         });
+      });
+  });
+
+  test("Status 200 - should return an empty array if the article exists but there are no comments", () => {
+    return request(app)
+      .get("/api/articles/2/comments")
+      .expect(200)
+      .then(({ body: { comments } }) => {
+        expect(comments).toBeInstanceOf(Array);
+        expect(comments).toHaveLength(0);
       });
   });
 
@@ -401,6 +412,34 @@ describe("POST /api/articles/:article_id/comments", () => {
     };
     return request(app)
       .post("/api/articles/beans/comments")
+      .send(newComment)
+      .expect(400)
+      .then(({ body: { msg } }) => {
+        expect(msg).toBe("Bad request");
+      });
+  });
+
+  test("Status 401 - should return an error message if the username does not exist in the users database", () => {
+    const newComment = {
+      username: "timmy",
+      body: "The first rule of fight club is.....post videos of the fights all over social media",
+    };
+    return request(app)
+      .post("/api/articles/2/comments")
+      .send(newComment)
+      .expect(401)
+      .then(({ body: { msg } }) => {
+        expect(msg).toBe("User not found");
+      });
+  });
+
+  test("Status 400 - should return an error message if incorrect data is in the request body", () => {
+    const newComment = {
+      votes: 2,
+      body: true,
+    };
+    return request(app)
+      .post("/api/articles/2/comments")
       .send(newComment)
       .expect(400)
       .then(({ body: { msg } }) => {
