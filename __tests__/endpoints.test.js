@@ -266,8 +266,8 @@ describe("GET /api/articles/:article_id/comments", () => {
       .get("/api/articles/2/comments")
       .expect(200)
       .then(({ body: { comments } }) => {
-        expect(comments).toBeInstanceOf(Array)
-        expect(comments).toHaveLength(0)
+        expect(comments).toBeInstanceOf(Array);
+        expect(comments).toHaveLength(0);
       });
   });
 
@@ -283,6 +283,86 @@ describe("GET /api/articles/:article_id/comments", () => {
   test("Status 400 - should return an error message if the wrong data type is passed to the url", () => {
     return request(app)
       .get("/api/articles/beans/comments")
+      .expect(400)
+      .then(({ body: { msg } }) => {
+        expect(msg).toBe("Bad request");
+      });
+  });
+});
+
+describe("POST /api/articles/:article_id/comments", () => {
+  test("Status 201 - creates a new comment in the database and returns it in the response", () => {
+    const newComment = {
+      username: "lurker",
+      body: "The first rule of fight club is.....post videos of the fights all over social media",
+    };
+
+    return request(app)
+      .post("/api/articles/2/comments")
+      .send(newComment)
+      .expect(201)
+      .then(({ body: { comment } }) => {
+        expect(comment).toEqual({
+          author: "lurker",
+          body: "The first rule of fight club is.....post videos of the fights all over social media",
+          article_id: 2,
+          votes: 0,
+          comment_id: expect.any(Number),
+          created_at: expect.any(String),
+        });
+      });
+  });
+
+  test("Status 404 - should return an error message if the article doesn't exist", () => {
+    const newComment = {
+      username: "lurker",
+      body: "The first rule of fight club is.....post videos of the fights all over social media",
+    };
+    return request(app)
+      .post("/api/articles/999/comments")
+      .send(newComment)
+      .expect(404)
+      .then(({ body: { msg } }) => {
+        expect(msg).toBe("Article not found");
+      });
+  });
+
+  test("Status 400 - should return an error message if the wrong data type is passed as a param", () => {
+    const newComment = {
+      username: "lurker",
+      body: "The first rule of fight club is.....post videos of the fights all over social media",
+    };
+    return request(app)
+      .post("/api/articles/beans/comments")
+      .send(newComment)
+      .expect(400)
+      .then(({ body: { msg } }) => {
+        expect(msg).toBe("Bad request");
+      });
+  });
+
+  test("Status 401 - should return an error message if the username does not exist in the users database", () => {
+    const newComment = {
+      username: "timmy",
+      body: "The first rule of fight club is.....post videos of the fights all over social media",
+    };
+    return request(app)
+      .post("/api/articles/2/comments")
+      .send(newComment)
+      .expect(401)
+      .then(({ body: { msg } }) => {
+        expect(msg).toBe("User not found");
+      });
+  });
+
+  test("Status 400 - should return an error message if incorrect data is in the request body", () => {
+    const newComment = {
+      votes: 2,
+      body: true,
+    };
+    return request(app)
+      .post("/api/articles/2/comments")
+      .send(newComment)
       .expect(400)
       .then(({ body: { msg } }) => {
         expect(msg).toBe("Bad request");
