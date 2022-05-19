@@ -54,6 +54,7 @@ exports.fetchArticlesFromDb = (
 ) => {
   const validSortBy = ["created_at", "title", "author", "votes"];
   const validOrder = ["ASC", "DESC"];
+  const queryParams = [];
 
   let queryStr = `
         SELECT 
@@ -70,7 +71,8 @@ exports.fetchArticlesFromDb = (
       `;
 
   if (topic) {
-    queryStr += `WHERE topic LIKE '${topic}'`;
+    queryStr += `WHERE topic LIKE $1`;
+    queryParams.push(topic);
   }
 
   queryStr += ` GROUP BY articles.article_id`;
@@ -85,7 +87,7 @@ exports.fetchArticlesFromDb = (
     queryStr += ` ORDER BY articles.${sort_by} ${order}`;
   }
 
-  return db.query(queryStr).then((data) => {
+  return db.query(queryStr, queryParams).then((data) => {
     return data.rows.map((article) => {
       return {
         ...article,
