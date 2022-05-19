@@ -1,5 +1,5 @@
-const { parseInputDatesAsUTC } = require("pg/lib/defaults");
 const db = require("../db/connection");
+const { fetchUsersFromDb } = require("./usersModels");
 
 exports.fetchCommentsByArticleIdFromDb = (id) => {
   const queryStr = `
@@ -22,6 +22,10 @@ exports.fetchCommentsByArticleIdFromDb = (id) => {
 exports.addNewCommentToDbByArticleId = (id, newComment) => {
   const { username, body } = newComment;
 
+  if (!username || !body) {
+    return Promise.reject({ status: 400, msg: "Bad request" });
+  }
+
   const queryStr = `
     INSERT INTO comments 
     (body, article_id, author, votes)
@@ -30,7 +34,19 @@ exports.addNewCommentToDbByArticleId = (id, newComment) => {
     RETURNING *
   `;
 
-  return db.query(queryStr, [body, id, username, 0]).then((data) => {
-    return data.rows[0];
-  });
+  return fetchUsersFromDb()
+    .then((users) => {
+      const usernames = users.map((userObj) => {
+        return userObj.username;
+      });
+
+      if (!usernames.includes(username)) {
+        return Promise.reject({ status: 401, msg: "User not found" });
+      } else {
+        return db.query(queryStr, [body, id, username, 0]);
+      }
+    })
+    .then((data) => {
+      return data.rows[0];
+    });
 };

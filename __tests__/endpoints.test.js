@@ -266,8 +266,8 @@ describe("GET /api/articles/:article_id/comments", () => {
       .get("/api/articles/2/comments")
       .expect(200)
       .then(({ body: { comments } }) => {
-        expect(comments).toBeInstanceOf(Array)
-        expect(comments).toHaveLength(0)
+        expect(comments).toBeInstanceOf(Array);
+        expect(comments).toHaveLength(0);
       });
   });
 
@@ -334,6 +334,34 @@ describe("POST /api/articles/:article_id/comments", () => {
     };
     return request(app)
       .post("/api/articles/beans/comments")
+      .send(newComment)
+      .expect(400)
+      .then(({ body: { msg } }) => {
+        expect(msg).toBe("Bad request");
+      });
+  });
+
+  test("Status 401 - should return an error message if the username does not exist in the users database", () => {
+    const newComment = {
+      username: "timmy",
+      body: "The first rule of fight club is.....post videos of the fights all over social media",
+    };
+    return request(app)
+      .post("/api/articles/2/comments")
+      .send(newComment)
+      .expect(401)
+      .then(({ body: { msg } }) => {
+        expect(msg).toBe("User not found");
+      });
+  });
+
+  test("Status 400 - should return an error message if incorrect data is in the request body", () => {
+    const newComment = {
+      votes: 2,
+      body: true,
+    };
+    return request(app)
+      .post("/api/articles/2/comments")
       .send(newComment)
       .expect(400)
       .then(({ body: { msg } }) => {
