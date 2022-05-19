@@ -217,7 +217,7 @@ describe("GET /api/articles", () => {
         expect(articles).toBeInstanceOf(Array);
         expect(articles).toHaveLength(12);
         articles.forEach((article) => {
-          expect(article).toMatchObject({
+          expect(article).toStrictEqual({
             article_id: expect.any(Number),
             title: expect.any(String),
             author: expect.any(String),
