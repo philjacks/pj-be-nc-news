@@ -1,4 +1,4 @@
-# Northcoders News API - PhilJacks Edition
+# Northcoders News API - Phil Jacks Edition
 
 **Visit the live version of this project**<br>
 https://ncnews-philjacks-edition.herokuapp.com/api/
