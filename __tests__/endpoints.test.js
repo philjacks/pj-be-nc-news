@@ -38,6 +38,68 @@ describe("GET /api/topics", () => {
   });
 });
 
+describe("POST /api/topics", () => {
+  test("Status 201 - should respond with a newly created topic object", () => {
+    const newTopic = {
+      slug: "beans",
+      description: "57 kinds of Heinz",
+    };
+
+    return request(app)
+      .post("/api/topics")
+      .send(newTopic)
+      .expect(201)
+      .then(({ body: { topic } }) => {
+        expect(topic).toEqual({
+          slug: "beans",
+          description: "57 kinds of Heinz",
+        });
+      });
+  });
+
+  test("Status 400 - returns bad request if topic already exists", () => {
+    const newTopic = {
+      slug: "mitch",
+      description: "The man, the Mitch, the legend",
+    };
+
+    return request(app)
+      .post("/api/topics")
+      .send(newTopic)
+      .expect(400)
+      .then(({ body: { msg } }) => {
+        expect(msg).toBe("Bad request");
+      });
+  });
+
+  test("Status 400 - returns bad request if the wrong data type is passed into the request body", () => {
+    const newTopic = {
+      slug: 7,
+      description: "The man, the Mitch, the legend",
+    };
+
+    return request(app)
+      .post("/api/topics")
+      .send(newTopic)
+      .expect(400)
+      .then(({ body: { msg } }) => {
+        expect(msg).toBe("Bad request");
+      });
+  });
+
+  test("Status 400 - returns bad request if request body is empty", () => {
+    const newTopic = {};
+
+    return request(app)
+      .post("/api/topics")
+      .send(newTopic)
+      .expect(400)
+      .then(({ body: { msg } }) => {
+        expect(msg).toBe("Bad request");
+      });
+  });
+});
+
 describe("GET /api/articles/:article_id", () => {
   test("Status 200 - should return an object containing the correct properties for an article", () => {
     return request(app)
