@@ -1,4 +1,5 @@
 const db = require("../db/connection");
+const { fetchUsersFromDb } = require("./usersModels");
 
 exports.fetchArticleByIdFromDb = (id) => {
   const queryStr = `
@@ -95,4 +96,33 @@ exports.fetchArticlesFromDb = (
       };
     });
   });
+};
+
+exports.postNewArticleToDb = (newArticle) => {
+  const { author, title, body, topic } = newArticle;
+
+  const queryStr = `
+    INSERT INTO articles
+    (author, title, body, topic)
+    VALUES
+    ($1, $2, $3, $4)
+    RETURNING *
+  `;
+
+  return fetchUsersFromDb()
+    .then((users) => {
+      const usernames = users.map((userObj) => {
+        return userObj.username;
+      });
+
+      if (!usernames.includes(author)) {
+        return Promise.reject({ status: 401, msg: "User not found" });
+      } else {
+        return db.query(queryStr, [author, title, body, topic]);
+      }
+    })
+    .then((data) => {
+      const newArticle = data.rows[0];
+      return this.fetchArticleByIdFromDb(newArticle.article_id);
+    });
 };
