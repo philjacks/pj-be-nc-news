@@ -610,3 +610,62 @@ describe("PATCH /api/comments/:comment_id", () => {
       });
   });
 });
+
+describe("POST /api/articles", () => {
+  test("Status 201 - should respond with a newly created article object", () => {
+    const newArticle = {
+      author: "icellusedkars",
+      title: "How The Wind Blows",
+      body: "It just blows",
+      topic: "paper",
+    };
+    return request(app)
+      .post("/api/articles")
+      .send(newArticle)
+      .expect(201)
+      .then(({ body: { article } }) => {
+        expect(article).toEqual({
+          article_id: expect.any(Number),
+          author: "icellusedkars",
+          title: "How The Wind Blows",
+          body: "It just blows",
+          topic: "paper",
+          votes: 0,
+          created_at: expect.any(String),
+          comment_count: 0,
+        });
+      });
+  });
+
+  test("Status 401 - should return an error if user doesn't exist in the database", () => {
+    const newArticle = {
+      author: "lil timmy",
+      title: "How The Wind Blows",
+      body: "It just blows",
+      topic: "paper",
+    };
+
+    return request(app)
+      .post("/api/articles")
+      .send(newArticle)
+      .expect(401)
+      .then(({ body: { msg } }) => {
+        expect(msg).toBe("User not found");
+      });
+  });
+
+  test("Status 400 - should return error message if incorrect data is passed into the request body", () => {
+    const newArticle = {
+      author: "icellusedkars",
+      title: true,
+      topic: 2,
+    };
+    return request(app)
+      .post("/api/articles")
+      .send(newArticle)
+      .expect(400)
+      .then(({ body: { msg } }) => {
+        expect(msg).toBe("Bad request");
+      });
+  });
+});
