@@ -10,7 +10,7 @@ A server side project providing a variety of endpoints for a news article applic
 **Prerequisite - NodeJS & PostgreSQL are required to run this project on your machine**
 1. At the top of this repo click **code** & copy the link to your clipboard.
 2. Open your terminal & git clone the link (this will create a copy of the repo on your local machine.)
-3. Open up the project & load up the temrinal in the root directory.
+3. Open up the project & load up the terminal in the root directory.
 4. Run **npm install** to install all the required the dependencies.
 5. Follow **Database Connection Instructions** below.
 6. Once installed, run **npm run setup-dbs** in the terminal to create the .
