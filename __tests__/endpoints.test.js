@@ -492,7 +492,7 @@ describe("DELETE /api/comments/:comment_id", () => {
   });
 });
 
-describe.only("GET /api/users/:username", () => {
+describe("GET /api/users/:username", () => {
   test("Status 200 - responds with a user object containing the correct properties", () => {
     return request(app)
       .get("/api/users/rogersop")
@@ -517,5 +517,4 @@ describe.only("GET /api/users/:username", () => {
         expect(msg).toBe("Not found");
       });
   });
-
 });
