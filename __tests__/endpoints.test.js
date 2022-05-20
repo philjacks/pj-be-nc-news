@@ -9,7 +9,7 @@ beforeEach(() => seed(testData));
 
 afterAll(() => db.end());
 
-describe("GET /api", () => {
+describe.only("GET /api", () => {
   test("Status 200 - should respond with a json object containing info on all other endpoints ", () => {
     return request(app)
       .get("/api")

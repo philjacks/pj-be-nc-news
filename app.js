@@ -1,10 +1,11 @@
 const express = require("express");
+const apiRouter = require("./routes/apiRouter");
 const { getTopics } = require("./controllers/topicsControllers");
 const { getUsers } = require("./controllers/usersControllers");
 const {
   getCommentsByArticleId,
   postNewCommentByArticleId,
-  deleteCommentById
+  deleteCommentById,
 } = require("./controllers/commentsControllers");
 const {
   getArticleById,
@@ -16,16 +17,13 @@ const {
   handleCustomErrors,
   handleInternalServerErrors,
 } = require("./controllers/errorsControllers");
-const info = require("./endpoints.json");
 
 const app = express();
 
 app.use(express.json());
 
 // Info
-app.get("/api", (req, res) => {
-  res.status(200).send(info);
-});
+app.use("/api", apiRouter);
 
 // Topics
 app.get("/api/topics", getTopics);
