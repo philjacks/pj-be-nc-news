@@ -126,3 +126,19 @@ exports.postNewArticleToDb = (newArticle) => {
       return this.fetchArticleByIdFromDb(newArticle.article_id);
     });
 };
+
+exports.removeArticleByIdFromDb = (id) => {
+  const queryStr = `
+    DELETE FROM articles
+    WHERE article_id = $1
+    RETURNING *
+  `;
+
+  return db.query(queryStr, [id]).then((data) => {
+    const deletedArticle = data.rows[0];
+
+    if (!deletedArticle) {
+      return Promise.reject({ status: 404, msg: "Not found" });
+    }
+  });
+};

@@ -3,6 +3,7 @@ const {
   updateArticleVotesInDb,
   fetchArticlesFromDb,
   postNewArticleToDb,
+  removeArticleByIdFromDb,
 } = require("../models/articlesModels");
 
 exports.getArticleById = (req, res, next) => {
@@ -48,6 +49,18 @@ exports.postNewArticle = (req, res, next) => {
   postNewArticleToDb(newArticle)
     .then((article) => {
       res.status(201).send({ article });
+    })
+    .catch((err) => {
+      next(err);
+    });
+};
+
+exports.deleteArticleById = (req, res, next) => {
+  const { article_id } = req.params;
+
+  removeArticleByIdFromDb(article_id)
+    .then(() => {
+      res.status(204).send();
     })
     .catch((err) => {
       next(err);

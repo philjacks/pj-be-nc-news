@@ -527,11 +527,10 @@ describe("DELETE /api/comments/:comment_id", () => {
       .delete("/api/comments/18")
       .expect(204)
       .then(() => {
-        db.query(`SELECT * FROM comments WHERE comment_id = 18`).then(
-          (data) => {
-            expect(data.rows).toEqual([]);
-          }
-        );
+        return db.query(`SELECT * FROM comments WHERE comment_id = 18`);
+      })
+      .then((data) => {
+        expect(data.rows).toEqual([]);
       });
   });
 
@@ -544,7 +543,7 @@ describe("DELETE /api/comments/:comment_id", () => {
       });
   });
 
-  test("Status 404 - should return anot found error if passed a valid id but doesn't exist", () => {
+  test("Status 404 - should return a not found error if passed a valid id but doesn't exist", () => {
     return request(app)
       .delete("/api/comments/999")
       .expect(404)
@@ -728,6 +727,38 @@ describe("POST /api/articles", () => {
       .expect(400)
       .then(({ body: { msg } }) => {
         expect(msg).toBe("Bad request");
+      });
+  });
+});
+
+describe("DELETE /api/articles/:article_id", () => {
+  test("Status 204 - should return a no content code when successfully deleted an article", () => {
+    return request(app)
+      .delete("/api/articles/2")
+      .expect(204)
+      .then(() => {
+        return db.query(`SELECT * FROM articles WHERE article_id = 2`);
+      })
+      .then((data) => {
+        expect(data.rows).toEqual([]);
+      });
+  });
+
+  test("Status 400 - should return a bad request error if an invalid data type is passed as a param", () => {
+    return request(app)
+      .delete("/api/articles/beans")
+      .expect(400)
+      .then(({ body: { msg } }) => {
+        expect(msg).toBe("Bad request");
+      });
+  });
+
+  test("Status 404 - should return a not found error if passed a valid id but doesn't exist", () => {
+    return request(app)
+      .delete("/api/articles/999")
+      .expect(404)
+      .then(({ body: { msg } }) => {
+        expect(msg).toBe("Not found");
       });
   });
 });
