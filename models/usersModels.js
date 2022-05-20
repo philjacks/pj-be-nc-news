@@ -11,7 +11,6 @@ exports.fetchUsersFromDb = () => {
 };
 
 exports.getUserByUsernameFromDb = (username) => {
-  console.log(username, typeof username);
   const queryStr = `
     SELECT * FROM users
     WHERE username = $1

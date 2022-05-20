@@ -123,7 +123,7 @@ describe("PATCH /api/articles/:article_id", () => {
   test("Status 400 - should return an error if the request body votes missing", () => {
     const inc_votes = {};
     return request(app)
-      .patch("/api/articles/beans")
+      .patch("/api/articles/1")
       .send(inc_votes)
       .expect(400)
       .then(({ body: { msg } }) => {
@@ -136,7 +136,7 @@ describe("PATCH /api/articles/:article_id", () => {
       votes: "beans",
     };
     return request(app)
-      .patch("/api/articles/beans")
+      .patch("/api/articles/1")
       .send(inc_votes)
       .expect(400)
       .then(({ body: { msg } }) => {
@@ -515,6 +515,98 @@ describe("GET /api/users/:username", () => {
       .expect(404)
       .then(({ body: { msg } }) => {
         expect(msg).toBe("Not found");
+      });
+  });
+});
+
+describe("PATCH /api/comments/:comment_id", () => {
+  test("Status 200 - should return a comment object with an updated votes value", () => {
+    const inc_votes = {
+      inc_votes: 2,
+    };
+    return request(app)
+      .patch("/api/comments/1")
+      .send(inc_votes)
+      .expect(200)
+      .then(({ body: { comment } }) => {
+        expect(comment).toEqual({
+          comment_id: 1,
+          body: "Oh, I've got compassion running out of my nose, pal! I'm the Sultan of Sentiment!",
+          votes: 18,
+          author: "butter_bridge",
+          article_id: 9,
+          created_at: "2020-04-06T12:17:00.000Z",
+        });
+      });
+  });
+
+  test("Status 200 - should return a comment object with an updated votes value when passed a negative number", () => {
+    const inc_votes = {
+      inc_votes: -2,
+    };
+    return request(app)
+      .patch("/api/comments/1")
+      .send(inc_votes)
+      .expect(200)
+      .then(({ body: { comment } }) => {
+        expect(comment).toEqual({
+          comment_id: 1,
+          body: "Oh, I've got compassion running out of my nose, pal! I'm the Sultan of Sentiment!",
+          votes: 14,
+          author: "butter_bridge",
+          article_id: 9,
+          created_at: "2020-04-06T12:17:00.000Z",
+        });
+      });
+  });
+
+  test("Status 400 - should return an error message if passed an invalid param", () => {
+    const inc_votes = {
+      inc_votes: 2,
+    };
+    return request(app)
+      .patch("/api/comments/beans")
+      .send(inc_votes)
+      .expect(400)
+      .then(({ body: { msg } }) => {
+        expect(msg).toBe("Bad request");
+      });
+  });
+
+  test("Status 404 - should return an error message if the comment doesn't exist", () => {
+    const inc_votes = {
+      inc_votes: 2,
+    };
+    return request(app)
+      .patch("/api/comments/999")
+      .send(inc_votes)
+      .expect(404)
+      .then(({ body: { msg } }) => {
+        expect(msg).toBe("Not found");
+      });
+  });
+
+  test("Status 400 - should return an error if the request body votes are not an integer", () => {
+    const inc_votes = {
+      votes: "beans",
+    };
+    return request(app)
+      .patch("/api/comments/1")
+      .send(inc_votes)
+      .expect(400)
+      .then(({ body: { msg } }) => {
+        expect(msg).toBe("Bad request");
+      });
+  });
+
+  test("Status 400 - should return an error if the request body is empty", () => {
+    const inc_votes = {};
+    return request(app)
+      .patch("/api/comments/1")
+      .send(inc_votes)
+      .expect(400)
+      .then(({ body: { msg } }) => {
+        expect(msg).toBe("Bad request");
       });
   });
 });
