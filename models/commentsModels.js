@@ -65,3 +65,22 @@ exports.removeCommentByIdFromDb = (id) => {
     }
   });
 };
+
+exports.patchCommentVotesByIdInDb = (id, inc_votes) => {
+  const queryStr = `
+    UPDATE comments
+    SET votes = votes + $2
+    WHERE comment_id = $1
+    RETURNING *
+  `;
+
+  return db.query(queryStr, [id, inc_votes]).then((data) => {
+    const updatedComent = data.rows[0];
+
+    if (!updatedComent) {
+      return Promise.reject({ status: 404, msg: "Not found" });
+    }
+
+    return updatedComent;
+  });
+};
